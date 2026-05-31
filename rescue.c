@@ -55,6 +55,7 @@ int main () {
     struct sCamps ss;
     int count = 0, count2 = 0;
     int choice;
+    char input[20];
 
     do{
 
@@ -132,40 +133,43 @@ int main () {
             case 4 :
                 
                 for(int i=1;i<=20;++i){
-                      printf("-");
-                }
-
-                printf("Shelter Camps");
-
-                for(int j=1;j<=20;++j){
-                       printf("-");
+                   printf("-");
                  }
 
-                printf("\n");
+              printf("Shelter Camps");
 
-                for(int k=1;k<=53;++k){
-                         printf("-");
-                 }
- 
-                 printf("\n\n");
+              for(int j=1;j<=20;++j){
+                  printf("-");
+              }
 
-                 printf("Enter total number of locations\n");
-                 scanf("%d",&ss.flocations);
+              printf("\n");
 
-                 printf("\n\n");
+              for(int k=1;k<=53;++k){
+                  printf("-");
+               }
 
-                 printf("Enter total number of shelter Camps\n");
-                 scanf("%d",&ss.fCamps);
+               printf("\n\n");
 
-                 printf("\n\n");
+                printf("Enter total number of locations\n");
+                fgets(input,sizeof(input),stdin);
+                sscanf(input,"%d",&ss.flocations);
 
-                 printf("Enter number of victims\n");
-                 scanf("%d",&ss.fVictims);
+                printf("\n\n");
+
+                printf("Enter total number of shelter Camps\n");
+                fgets(input,sizeof(input),stdin);
+                sscanf(input,"%d",&ss.fCamps);
+
+                printf("\n\n");
+
+                printf("Enter number of victims\n");
+                fgets(input,sizeof(input),stdin);
+                sscanf(input,"%d",&ss.fVictims);
 
                 printf("\n\n");
 
                 location(ss);
-               
+  
                 break;
 
             case 5 :
@@ -290,6 +294,234 @@ int assignRescueteam(struct rescueMissions mission[], struct rescueTeam team[], 
     printf("Mission Assigned Successfully \n");
     printf("Assigned Team %s", team[matchTeam].teamName);
 
-
-
 }
+
+//Shelter Camps
+int location(struct sCamps ss){
+
+    char places[ss.flocations][20];
+    int locId[ss.flocations];
+
+    for(int j=0;j<ss.flocations;++j){
+        printf("Location no %d is ",j+1);
+        fgets(places[j],20,stdin);
+        places[j][strcspn(places[j],"\n")] = '\0';
+        locId[j]=1000+j;
+    }
+
+    printf("\n\n");
+
+    camps(places,ss.flocations,ss);
+
+    return 0;
+}
+
+int camps(char locations[][20],int size,struct sCamps ss){
+
+    int numOfCamps[size];
+    int campID[ss.fCamps];
+    char input[20];
+
+    for(int i=0;i<ss.flocations;++i){
+
+        printf("Enter number of camps in %s :",locations[i]);
+
+        fgets(input,sizeof(input),stdin);
+        sscanf(input,"%d",&numOfCamps[i]);
+
+        printf("\n\n");
+
+        if(ss.fCamps<numOfCamps[i]){
+            numOfCamps[i]=0;
+            break;
+        }
+    }
+
+    for(int j=0;j<ss.fCamps;++j){
+        campID[j]=10+j;
+    }
+
+    for(int m=0;m<ss.fCamps;++m){
+        printf("Camp ID for camp no %d is %d\n",m+1,campID[m]);
+    }
+
+    printf("\n\n");
+
+    capacity(campID,ss.fCamps,ss);
+
+    return 0;
+}
+
+int capacity(int camp[],int size,struct sCamps ss){
+
+    ss.fCapacity=0;
+    int capacities[ss.fCamps];
+    int spc;
+    char input[20];
+
+    printf("Enter capacities of each camp\n");
+
+    for(int i=0;i<ss.fCamps;++i){
+
+        printf("Capacity of camp id %d is ",camp[i]);
+
+        fgets(input,sizeof(input),stdin);
+        sscanf(input,"%d",&capacities[i]);
+
+        printf("\n");
+
+        ss.fCapacity+=capacities[i];
+    }
+
+    printf("\n\n");
+
+    if(ss.fVictims>ss.fCapacity)
+        printf("**Occupy more camps\n");
+
+    printf("Is there victims with special necessities?\n");
+    printf("Enter 1 if yes, enter 0 if not: ");
+
+    fgets(input,sizeof(input),stdin);
+    sscanf(input,"%d",&spc);
+
+    printf("\n\n");
+
+    if(spc==1)
+        special();
+
+    availability(ss,camp,ss.fCamps,capacities,ss.fCamps);
+
+    return 0;
+}
+
+int special(){
+
+    int ntype;
+    char input[20];
+
+    printf("Enter 1 for parental necessities:\n");
+    printf("Enter 2 for medical necessities:\n");
+    printf("Enter 3 for elderly necessities:\n");
+
+    fgets(input,sizeof(input),stdin);
+    sscanf(input,"%d",&ntype);
+
+    printf("\n");
+
+    switch(ntype){
+
+        case 1:
+            printf("Send to maternal area\n");
+            break;
+
+        case 2:
+            printf("Send to medical area\n");
+            break;
+
+        case 3:
+            printf("Send to elder care area\n");
+            break;
+
+        default:
+            printf("Service can not be provided\n");
+    }
+
+    printf("\n");
+
+    return 0;
+}
+
+
+int availability(struct sCamps ss,int campIDs[],int cSize,int campCap[],int space){
+
+    int avaSpace;
+
+    for(int i=0;i<3;++i){
+        for(int j=0;j<40;++j){
+            printf("*");
+        }
+        printf("\n");
+    }
+
+    for(int k=0;k<10;++k){
+        printf(" ");
+    }
+
+    printf("Camp Details\n\n");
+
+    printf("Camp ID");
+
+    for(int k=0;k<15;++k){
+        printf(" ");
+    }
+
+    printf("Availability\n\n");
+
+    for(int a=0;a<ss.fCamps;++a){
+
+        printf("%d",campIDs[a]);
+
+        for(int k=0;k<20;++k){
+            printf(" ");
+        }
+
+        if(ss.fVictims!=0){
+
+            if(ss.fVictims>campCap[a]){
+                printf("NOT Available");
+                ss.fVictims-=campCap[a];
+            }
+            else{
+
+                avaSpace=campCap[a]-ss.fVictims;
+
+                if(ss.fVictims==0)
+                    printf("NOT Available");
+                else
+                    printf("%d spaces available",avaSpace);
+
+                ss.fVictims=0;
+            }
+        }
+        else{
+            printf("Available");
+        }
+
+        printf("\n");
+    }
+
+    printf("\n");
+
+    for(int i=0;i<3;++i){
+        for(int j=0;j<40;++j){
+            printf("*");
+        }
+        printf("\n");
+    }
+
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
