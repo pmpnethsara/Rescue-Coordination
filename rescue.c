@@ -12,10 +12,14 @@ struct Victim {
     char injury[100];
     char status[20];
     char location[50];
+    char contact[15];
 };
 
 struct Victim victims[100];
 int victimCount = 0;
+
+char buffer[CHARMAX];
+
 
 void victimRegistryMenu();
 void registerVictim();
@@ -28,7 +32,6 @@ void inputAge(int *age);
 void inputGender(char *gender);
 void inputStatus(char *status);
 
-char buffer[CHARMAX];
 
 int main() {
     int choice;
@@ -61,6 +64,7 @@ int main() {
 
     return 0;
 }
+
 
 void inputAge(int *age) {
     while (1) {
@@ -107,6 +111,7 @@ void inputStatus(char *status) {
     }
 }
 
+
 void registerVictim() {
     if (victimCount >= 100) {
         printf("Victim registry is full!\n");
@@ -137,6 +142,15 @@ void registerVictim() {
     buffer[strcspn(buffer, "\n")] = '\0';
     strncpy(v.location, buffer, 50);
 
+    printf("Enter Contact Number (or press Enter if none): ");
+    fgets(buffer, CHARMAX, stdin);
+    buffer[strcspn(buffer, "\n")] = '\0';
+    if (strlen(buffer) == 0) {
+        strncpy(v.contact, "N/A", 15);
+    } else {
+        strncpy(v.contact, buffer, 15);
+    }
+
     inputStatus(v.status);
 
     victims[victimCount] = v;
@@ -152,19 +166,20 @@ void displayAllVictims() {
     }
 
     printf("\n--- All Registered Victims ---\n");
-    printf("%-5s %-20s %-5s %-10s %-15s %-15s %-15s\n",
-           "ID", "Name", "Age", "Gender", "Status", "Location", "Injury Description");
-    printf("----------------------------------------------------------------------------------------------\n");
+    printf("%-5s %-20s %-5s %-10s %-15s %-15s %-20s %-15s\n",
+           "ID", "Name", "Age", "Gender", "Status", "Location", "Injury", "Contact");
+    printf("----------------------------------------------------------------------------------------------------------\n");
 
     for (int i = 0; i < victimCount; i++) {
-        printf("%-5d %-20s %-5d %-10s %-15s %-15s %-15s\n",
+        printf("%-5d %-20s %-5d %-10s %-15s %-15s %-20s %-15s\n",
                victims[i].id,
                victims[i].name,
                victims[i].age,
                victims[i].gender,
                victims[i].status,
                victims[i].location,
-               victims[i].injury);
+               victims[i].injury,
+               victims[i].contact);
     }
 }
 
@@ -188,6 +203,7 @@ void searchVictimByID() {
             printf("Injury   : %s\n", victims[i].injury);
             printf("Status   : %s\n", victims[i].status);
             printf("Location : %s\n", victims[i].location);
+            printf("Contact  : %s\n", victims[i].contact);
             printf("------------------------------\n");
             found = 1;
             break;
@@ -203,35 +219,36 @@ void searchVictimByKeyword() {
     char searchKeyword[50];
     int found = 0;
 
-    printf("\nEnter keyword to search: ");
+    printf("\nEnter keyword to search (Name / Gender / Status / Location): ");
     fgets(buffer, CHARMAX, stdin);
     buffer[strcspn(buffer, "\n")] = '\0';
     strncpy(searchKeyword, buffer, 50);
 
     printf("\n--- Search Results ---\n");
-    printf("%-5s %-20s %-5s %-10s %-15s %-15s %-15s\n",
-           "ID", "Name", "Age", "Gender", "Status", "Location", "Injury Description");
-    printf("----------------------------------------------------------------------------------------------\n");
+    printf("%-5s %-20s %-5s %-10s %-15s %-15s %-20s %-15s\n",
+           "ID", "Name", "Age", "Gender", "Status", "Location", "Injury", "Contact");
+    printf("----------------------------------------------------------------------------------------------------------\n");
 
     for (int i = 0; i < victimCount; i++) {
         if ((strcasecmp(victims[i].name, searchKeyword) == 0) ||
             (strcasecmp(victims[i].gender, searchKeyword) == 0) ||
             (strcasecmp(victims[i].status, searchKeyword) == 0) ||
             (strcasecmp(victims[i].location, searchKeyword) == 0)) {
-            printf("%-5d %-25s %-5d %-10s %-15s %-20s %-15s\n",
+            printf("%-5d %-20s %-5d %-10s %-15s %-15s %-20s %-15s\n",
                victims[i].id,
                victims[i].name,
                victims[i].age,
                victims[i].gender,
                victims[i].status,
                victims[i].location,
-               victims[i].injury);
+               victims[i].injury,
+               victims[i].contact);
             found++;
         }
     }
 
-    printf("----------------------------------------------------------------------------------------------\n");
-    printf("No of records : %d\n", found);
+    printf("----------------------------------------------------------------------------------------------------------\n");
+    printf("Records found : %d\n", found);
 
     if (!found) {
         printf("No victim found with keyword: %s\n", searchKeyword);
@@ -301,14 +318,29 @@ void victimRegistryMenu() {
         choiceReg = atoi(buffer);
 
         switch (choiceReg) {
-            case 1: registerVictim();       break;
-            case 2: displayAllVictims();    break;
-            case 3: searchVictimByID();     break;
-            case 4: searchVictimByKeyword(); break;
-            case 5: updateVictimStatus();   break;
-            case 6: displayVictimSummary(); break;
-            case 0: printf("Returning to main menu...\n"); break;
-            default: printf("Invalid choice! Try again.\n");
+            case 1: 
+                registerVictim();        
+                break;
+            case 2: 
+                displayAllVictims();     
+                break;
+            case 3: 
+                searchVictimByID();      
+                break;
+            case 4: 
+                searchVictimByKeyword(); 
+                break;
+            case 5: 
+                updateVictimStatus();    
+                break;
+            case 6: 
+                displayVictimSummary();  
+                break;
+            case 0: 
+                printf("Returning to main menu...\n"); 
+                break;
+            default: 
+                printf("Invalid choice! Try again.\n");
         }
 
     } while (choiceReg != 0);
