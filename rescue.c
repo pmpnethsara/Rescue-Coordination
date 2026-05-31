@@ -51,13 +51,27 @@ int main() {
         choice = atoi(buffer);
 
         switch(choice) {
-            case 1: victimRegistryMenu(); break;
-            case 2: break;
-            case 3: break;
-            case 4: break;
-            case 5: break;
-            case 6: printf("=========== Exiting Program ==========\n"); break;
-            default: printf("Invalid Choice Try Again!\n"); break;
+            case 1: 
+                victimRegistryMenu(); 
+                break;
+            case 2: 
+                
+                break;
+            case 3: 
+                
+                break;
+            case 4: 
+                
+                break;
+            case 5: 
+                
+                break;
+            case 6: 
+                printf("=========== Exiting Program ==========\n"); 
+                break;
+            default: 
+                printf("Invalid Choice Try Again!\n"); 
+                break;
         }
 
     } while(choice != 6);
