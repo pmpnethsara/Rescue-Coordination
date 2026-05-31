@@ -352,4 +352,3 @@ void performanceReport(struct rescueTeam team[], int count) {
     }
 
 }
-
