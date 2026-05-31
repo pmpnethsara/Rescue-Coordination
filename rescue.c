@@ -40,7 +40,6 @@ struct rescueMissions{
 
 };
 
-<<<<<<< HEAD
 struct sCamps{
     int flocations;
     int fCamps;
@@ -50,8 +49,6 @@ struct sCamps{
     int campY;
 };
 
-=======
->>>>>>> 848c1f2 (Rescue teams Structure Complete)
 struct Victim victims[100];
 int victimCount = 0;
 void victimRegistryMenu();
@@ -65,11 +62,10 @@ void inputAge(int *age);
 void inputGender(char *gender);
 void inputStatus(char *status);
 
-<<<<<<< HEAD
-=======
+
 void rescueTeamMenu(struct rescueTeam team[], struct rescueMissions mission[], int *count, int *count2);
 
->>>>>>> 848c1f2 (Rescue teams Structure Complete)
+
 void addRescueteam(struct rescueTeam team[], int *count ); 
 void viewRescueteam(struct rescueTeam team[], int count);
 int assignRescueteam(struct rescueMissions mission[], struct rescueTeam team[], int *count2, int *count); 
@@ -130,12 +126,9 @@ int main () {
         switch(choice) {
 
             case 1 :
-<<<<<<< HEAD
+
                 victimRegistryMenu();                
-=======
-                
-                victimRegistryMenu();
->>>>>>> 848c1f2 (Rescue teams Structure Complete)
+				
                 break;
 
             case 2 :
@@ -492,8 +485,6 @@ void victimRegistryMenu() {
     } while (choiceReg != 0);
 }
 
-<<<<<<< HEAD
-=======
 // Rescue Team
 void rescueTeamMenu(struct rescueTeam team[], struct rescueMissions mission[], int *count,  int *count2){
 	
@@ -560,7 +551,6 @@ void rescueTeamMenu(struct rescueTeam team[], struct rescueMissions mission[], i
 		
 }
 
->>>>>>> 848c1f2 (Rescue teams Structure Complete)
 void addRescueteam(struct rescueTeam team[], int *count ) {
     
     team[*count].teamID = *count;
@@ -666,8 +656,6 @@ int assignRescueteam(struct rescueMissions mission[], struct rescueTeam team[], 
 
 }
 
-<<<<<<< HEAD
-=======
 
 void trackMission(struct rescueTeam team[], struct rescueMissions mission[], int *count2){
 
@@ -746,7 +734,6 @@ void performanceReport(struct rescueTeam team[], int count) {
 }
 
 
->>>>>>> 848c1f2 (Rescue teams Structure Complete)
 //Shelter Camps
 int location(struct sCamps ss){
 
@@ -953,7 +940,6 @@ int availability(struct sCamps ss,int campIDs[],int cSize,int campCap[],int spac
     return 0;
 }
 
-<<<<<<< HEAD
 
 
 
@@ -975,7 +961,3 @@ int availability(struct sCamps ss,int campIDs[],int cSize,int campCap[],int spac
 
 
 
-
-
-=======
->>>>>>> 848c1f2 (Rescue teams Structure Complete)
