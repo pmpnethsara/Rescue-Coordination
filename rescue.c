@@ -17,6 +17,13 @@ struct Victim {
 struct Victim victims[100];
 int victimCount = 0;
 
+void victimRegistryMenu();
+void registerVictim();
+void displayAllVictims();
+void searchVictimByKeyword();
+void updateVictimStatus();
+void displayVictimSummary();
+
 char buffer[CHARMAX];
 
 int main () {
@@ -217,7 +224,7 @@ void displayVictimSummary() {
 }
 
 void victimRegistryMenu() {
-    int choice;
+    int choiceReg;
 
     do {
         printf("\n========== Victim Registry ==========\n");
@@ -230,16 +237,36 @@ void victimRegistryMenu() {
         printf("=====================================\n");
         printf("Enter choice: ");
         scanf("%d", &choice);
+        while (getchar() != '\n');
 
-        switch (choice) {
-            case 1: registerVictim();     break;
-            case 2: displayAllVictims();  break;
-            case 3: searchVictimByKeyword(); break;
-            case 4: updateVictimStatus(); break;
-            case 5: displayVictimSummary(); break;
-            case 0: printf("Returning to main menu...\n"); break;
-            default: printf("Invalid choice! Try again.\n");
+        switch (choiceReg) {
+            case 1: 
+                registerVictim();     
+                break;
+            
+            case 2: 
+                displayAllVictims();  
+                break;
+            
+            case 3: 
+                searchVictimByKeyword(); 
+                break;
+            
+            case 4: 
+                updateVictimStatus(); 
+                break;
+            
+            case 5: 
+                displayVictimSummary(); 
+                break;
+            
+            case 0: 
+                printf("Returning to main menu...\n"); 
+                break;
+            
+            default: 
+                printf("Invalid choice! Try again.\n");
         }
 
-    } while (choice != 0);
+    } while (choiceReg != 0);
 }
