@@ -24,6 +24,7 @@ void displayAllVictims();
 void searchVictimByKeyword();
 void updateVictimStatus();
 void displayVictimSummary();
+void inputAge(int *age);
 void inputGender(char *gender);
 void inputStatus(char *status);
 
@@ -227,7 +228,10 @@ void searchVictimByKeyword() {
     printf("----------------------------------------------------------------------------------------------\n");
 
     for (int i = 0; i < victimCount; i++) {
-        if ((strcasecmp(victims[i].name, searchKeyword) == 0) || (strcasecmp(victims[i].status, searchKeyword) == 0) || (strcasecmp(victims[i].location, searchKeyword) == 0)) {
+        if ((strcasecmp(victims[i].name, searchKeyword) == 0) || 
+            (strcasecmp(victims[i].status, searchKeyword) == 0) || 
+            (strcasecmp(victims[i].location, searchKeyword) == 0) || 
+            (strcasecmp(victims[i].gender, searchKeyword) == 0)) {
             printf("%-5d %-25s %-5d %-10s %-15s %-20s %-15s\n",
                victims[i].id,
                victims[i].name,
@@ -258,8 +262,7 @@ void updateVictimStatus() {
     for (int i = 0; i < victimCount; i++) {
         if (victims[i].id == searchId) {
             printf("Current Status: %s\n", victims[i].status);
-            printf("Enter New Status (Displaced/Sheltered/Rescued): ");
-            scanf("%s", victims[i].status);
+            inputStatus(victims[i].status);
             printf("Status updated successfully!\n");
             found = 1;
             break;
