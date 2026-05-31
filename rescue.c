@@ -4,15 +4,14 @@
 
 #define CHARMAX 50
 
-
 struct Victim {
     int id;
     char name[50];
     int age;
     char gender[10];
     char injury[100];
-    char status[20];      
-    char location[50];    
+    char status[20];
+    char location[50];
 };
 
 struct Victim victims[100];
@@ -21,6 +20,7 @@ int victimCount = 0;
 void victimRegistryMenu();
 void registerVictim();
 void displayAllVictims();
+void searchVictimByID();
 void searchVictimByKeyword();
 void updateVictimStatus();
 void displayVictimSummary();
@@ -30,73 +30,45 @@ void inputStatus(char *status);
 
 char buffer[CHARMAX];
 
-int main () {
-
-
-
+int main() {
     int choice;
 
-    do{
-
+    do {
         printf("\n================= RESCUE COORDINATION SYSTEM ==================\n");
-        printf("1. Victim registry \n");
-        printf("2. Rescue Teams \n");
-        printf("3. Supply Management \n");
-        printf("4. Shelter Camps \n");
-        printf("5. Incident Reports \n");
-        printf("6. Exit \n");
+        printf("1. Victim Registry\n");
+        printf("2. Rescue Teams\n");
+        printf("3. Supply Management\n");
+        printf("4. Shelter Camps\n");
+        printf("5. Incident Reports\n");
+        printf("6. Exit\n");
+        printf("Enter Your Choice: ");
 
-        printf("Enter Your Choise : ");
         fgets(buffer, CHARMAX, stdin);
         buffer[strcspn(buffer, "\n")] = '\0';
         choice = atoi(buffer);
 
         switch(choice) {
-
-            case 1 :
-                victimRegistryMenu();
-                break;
-
-            case 2 :
-
-
-                break;
-
-            case 3 :
-
-
-                break;
-
-            case 4 :
-
-
-                break;
-
-            case 5 :
-
-
-                break;
-
-            case 6 :
-
-                printf("=========== Exiting Program ========== \n");
-                break;
-
-            default :
-
-                printf("Invalid Choice Try Again !\n");
-                break;
+            case 1: victimRegistryMenu(); break;
+            case 2: break;
+            case 3: break;
+            case 4: break;
+            case 5: break;
+            case 6: printf("=========== Exiting Program ==========\n"); break;
+            default: printf("Invalid Choice Try Again!\n"); break;
         }
-
 
     } while(choice != 6);
 
+    return 0;
 }
 
 void inputAge(int *age) {
     while (1) {
         printf("Enter Age: ");
-        scanf("%d", age);
+        fgets(buffer, CHARMAX, stdin);
+        buffer[strcspn(buffer, "\n")] = '\0';
+        *age = atoi(buffer);
+
         if (*age <= 0 || *age > 120) {
             printf("Invalid age! Please enter a value between 1 and 120.\n");
         } else {
@@ -108,7 +80,9 @@ void inputAge(int *age) {
 void inputGender(char *gender) {
     while (1) {
         printf("Enter Gender (Male/Female): ");
-        scanf("%s", gender);
+        fgets(buffer, CHARMAX, stdin);
+        buffer[strcspn(buffer, "\n")] = '\0';
+        strncpy(gender, buffer, 10);
 
         if (strcasecmp(gender, "Male") == 0 || strcasecmp(gender, "Female") == 0) {
             break;
@@ -121,7 +95,9 @@ void inputGender(char *gender) {
 void inputStatus(char *status) {
     while (1) {
         printf("Enter Status (Displaced/Sheltered/Rescued): ");
-        scanf("%s", status);
+        fgets(buffer, CHARMAX, stdin);
+        buffer[strcspn(buffer, "\n")] = '\0';
+        strncpy(status, buffer, 20);
 
         if (strcasecmp(status, "Displaced") == 0 || strcasecmp(status, "Sheltered") == 0 || strcasecmp(status, "Rescued") == 0) {
             break;
@@ -143,17 +119,23 @@ void registerVictim() {
     printf("\n--- Register New Victim ---\n");
 
     printf("Enter Name: ");
-    scanf(" %[^\n]", v.name);
+    fgets(buffer, CHARMAX, stdin);
+    buffer[strcspn(buffer, "\n")] = '\0';
+    strncpy(v.name, buffer, 50);
 
     inputAge(&v.age);
 
     inputGender(v.gender);
 
     printf("Enter Injury Description: ");
-    scanf(" %[^\n]", v.injury);
+    fgets(buffer, 100, stdin);
+    buffer[strcspn(buffer, "\n")] = '\0';
+    strncpy(v.injury, buffer, 100);
 
     printf("Enter Last Known Location: ");
-    scanf(" %[^\n]", v.location);
+    fgets(buffer, CHARMAX, stdin);
+    buffer[strcspn(buffer, "\n")] = '\0';
+    strncpy(v.location, buffer, 50);
 
     inputStatus(v.status);
 
@@ -191,7 +173,9 @@ void searchVictimByID() {
     int found = 0;
 
     printf("\nEnter Victim ID to search: ");
-    scanf("%d", &searchId);
+    fgets(buffer, CHARMAX, stdin);
+    buffer[strcspn(buffer, "\n")] = '\0';
+    searchId = atoi(buffer);
 
     printf("\n--- Search Results ---\n");
 
@@ -220,7 +204,9 @@ void searchVictimByKeyword() {
     int found = 0;
 
     printf("\nEnter keyword to search: ");
-    scanf(" %[^\n]", searchKeyword);
+    fgets(buffer, CHARMAX, stdin);
+    buffer[strcspn(buffer, "\n")] = '\0';
+    strncpy(searchKeyword, buffer, 50);
 
     printf("\n--- Search Results ---\n");
     printf("%-5s %-20s %-5s %-10s %-15s %-15s %-15s\n",
@@ -228,10 +214,10 @@ void searchVictimByKeyword() {
     printf("----------------------------------------------------------------------------------------------\n");
 
     for (int i = 0; i < victimCount; i++) {
-        if ((strcasecmp(victims[i].name, searchKeyword) == 0) || 
-            (strcasecmp(victims[i].status, searchKeyword) == 0) || 
-            (strcasecmp(victims[i].location, searchKeyword) == 0) || 
-            (strcasecmp(victims[i].gender, searchKeyword) == 0)) {
+        if ((strcasecmp(victims[i].name, searchKeyword) == 0) ||
+            (strcasecmp(victims[i].gender, searchKeyword) == 0) ||
+            (strcasecmp(victims[i].status, searchKeyword) == 0) ||
+            (strcasecmp(victims[i].location, searchKeyword) == 0)) {
             printf("%-5d %-25s %-5d %-10s %-15s %-20s %-15s\n",
                victims[i].id,
                victims[i].name,
@@ -257,7 +243,9 @@ void updateVictimStatus() {
     int found = 0;
 
     printf("\nEnter Victim ID to update status: ");
-    scanf("%d", &searchId);
+    fgets(buffer, CHARMAX, stdin);
+    buffer[strcspn(buffer, "\n")] = '\0';
+    searchId = atoi(buffer);
 
     for (int i = 0; i < victimCount; i++) {
         if (victims[i].id == searchId) {
@@ -300,47 +288,27 @@ void victimRegistryMenu() {
         printf("\n========== Victim Registry ==========\n");
         printf("1. Register New Victim\n");
         printf("2. Display All Victims\n");
-        printf("3. Search Victim by Id\n");
+        printf("3. Search Victim by ID\n");
         printf("4. Search Victim by Keyword\n");
         printf("5. Update Victim Status\n");
         printf("6. View Summary\n");
         printf("0. Back to Main Menu\n");
         printf("=====================================\n");
         printf("Enter choice: ");
-        scanf("%d", &choiceReg);
-        while (getchar() != '\n');
+
+        fgets(buffer, CHARMAX, stdin);
+        buffer[strcspn(buffer, "\n")] = '\0';
+        choiceReg = atoi(buffer);
 
         switch (choiceReg) {
-            case 1:
-                registerVictim();
-                break;
-
-            case 2:
-                displayAllVictims();
-                break;
-
-            case 3:
-                searchVictimByID();
-                break;
-
-            case 4:
-                searchVictimByKeyword();
-                break;
-
-            case 5:
-                updateVictimStatus();
-                break;
-
-            case 6:
-                displayVictimSummary();
-                break;
-
-            case 0:
-                printf("Returning to main menu...\n");
-                break;
-
-            default:
-                printf("Invalid choice! Try again.\n");
+            case 1: registerVictim();       break;
+            case 2: displayAllVictims();    break;
+            case 3: searchVictimByID();     break;
+            case 4: searchVictimByKeyword(); break;
+            case 5: updateVictimStatus();   break;
+            case 6: displayVictimSummary(); break;
+            case 0: printf("Returning to main menu...\n"); break;
+            default: printf("Invalid choice! Try again.\n");
         }
 
     } while (choiceReg != 0);
