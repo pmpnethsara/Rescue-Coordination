@@ -4,14 +4,15 @@
 
 #define CHARMAX 50
 
+
 struct Victim {
     int id;
     char name[50];
     int age;
     char gender[10];
     char injury[100];
-    char status[20];      // "Displaced", "Sheltered", "Rescued"
-    char location[50];    // Last known location
+    char status[20];      
+    char location[50];    
 };
 
 struct Victim victims[100];
@@ -23,6 +24,8 @@ void displayAllVictims();
 void searchVictimByKeyword();
 void updateVictimStatus();
 void displayVictimSummary();
+void inputGender(char *gender);
+void inputStatus(char *status);
 
 char buffer[CHARMAX];
 
@@ -35,7 +38,7 @@ int main () {
     do{
 
         printf("\n================= RESCUE COORDINATION SYSTEM ==================\n");
-        printf("1. victim registry \n");
+        printf("1. Victim registry \n");
         printf("2. Rescue Teams \n");
         printf("3. Supply Management \n");
         printf("4. Shelter Camps \n");
@@ -55,22 +58,22 @@ int main () {
 
             case 2 :
 
-                
+
                 break;
 
             case 3 :
 
-                 
+
                 break;
 
             case 4 :
 
-               
+
                 break;
 
             case 5 :
 
-                   
+
                 break;
 
             case 6 :
@@ -89,6 +92,44 @@ int main () {
 
 }
 
+void inputAge(int *age) {
+    while (1) {
+        printf("Enter Age: ");
+        scanf("%d", age);
+        if (*age <= 0 || *age > 120) {
+            printf("Invalid age! Please enter a value between 1 and 120.\n");
+        } else {
+            break;
+        }
+    }
+}
+
+void inputGender(char *gender) {
+    while (1) {
+        printf("Enter Gender (Male/Female): ");
+        scanf("%s", gender);
+
+        if (strcasecmp(gender, "Male") == 0 || strcasecmp(gender, "Female") == 0) {
+            break;
+        } else {
+            printf("Invalid gender! Please enter Male or Female.\n");
+        }
+    }
+}
+
+void inputStatus(char *status) {
+    while (1) {
+        printf("Enter Status (Displaced/Sheltered/Rescued): ");
+        scanf("%s", status);
+
+        if (strcasecmp(status, "Displaced") == 0 || strcasecmp(status, "Sheltered") == 0 || strcasecmp(status, "Rescued") == 0) {
+            break;
+        } else {
+            printf("Invalid status! Please enter Displaced, Sheltered, or Rescued.\n");
+        }
+    }
+}
+
 void registerVictim() {
     if (victimCount >= 100) {
         printf("Victim registry is full!\n");
@@ -103,11 +144,9 @@ void registerVictim() {
     printf("Enter Name: ");
     scanf(" %[^\n]", v.name);
 
-    printf("Enter Age: ");
-    scanf("%d", &v.age);
+    inputAge(&v.age);
 
-    printf("Enter Gender (Male/Female/Other): ");
-    scanf("%s", v.gender);
+    inputGender(v.gender);
 
     printf("Enter Injury Description: ");
     scanf(" %[^\n]", v.injury);
@@ -115,8 +154,7 @@ void registerVictim() {
     printf("Enter Last Known Location: ");
     scanf(" %[^\n]", v.location);
 
-    printf("Enter Status (Displaced/Sheltered/Rescued): ");
-    scanf("%s", v.status);
+    inputStatus(v.status);
 
     victims[victimCount] = v;
     victimCount++;
@@ -147,6 +185,35 @@ void displayAllVictims() {
     }
 }
 
+void searchVictimByID() {
+    int searchId;
+    int found = 0;
+
+    printf("\nEnter Victim ID to search: ");
+    scanf("%d", &searchId);
+
+    printf("\n--- Search Results ---\n");
+
+    for (int i = 0; i < victimCount; i++) {
+        if (victims[i].id == searchId) {
+            printf("ID       : %d\n", victims[i].id);
+            printf("Name     : %s\n", victims[i].name);
+            printf("Age      : %d\n", victims[i].age);
+            printf("Gender   : %s\n", victims[i].gender);
+            printf("Injury   : %s\n", victims[i].injury);
+            printf("Status   : %s\n", victims[i].status);
+            printf("Location : %s\n", victims[i].location);
+            printf("------------------------------\n");
+            found = 1;
+            break;
+        }
+    }
+
+    if (!found) {
+        printf("No victim found with ID: %d\n", searchId);
+    }
+}
+
 void searchVictimByKeyword() {
     char searchKeyword[50];
     int found = 0;
@@ -160,7 +227,7 @@ void searchVictimByKeyword() {
     printf("----------------------------------------------------------------------------------------------\n");
 
     for (int i = 0; i < victimCount; i++) {
-        if ((strcasecmp(victims[i].name, searchKeyword) == 0) || (strcasecmp(victims[i].status, searchKeyword) == 0) || (strcasecmp(victims[i].location, searchKeyword) == 0) || (victims[i].id==searchKeyword) ) {
+        if ((strcasecmp(victims[i].name, searchKeyword) == 0) || (strcasecmp(victims[i].status, searchKeyword) == 0) || (strcasecmp(victims[i].location, searchKeyword) == 0)) {
             printf("%-5d %-25s %-5d %-10s %-15s %-20s %-15s\n",
                victims[i].id,
                victims[i].name,
@@ -208,11 +275,11 @@ void displayVictimSummary() {
     int displaced = 0, sheltered = 0, rescued = 0;
 
     for (int i = 0; i < victimCount; i++) {
-        if (strcmp(victims[i].status, "Displaced") == 0)
+        if (strcasecmp(victims[i].status, "Displaced") == 0)
             displaced++;
-        else if (strcmp(victims[i].status, "Sheltered") == 0)
+        else if (strcasecmp(victims[i].status, "Sheltered") == 0)
             sheltered++;
-        else if (strcmp(victims[i].status, "Rescued") == 0)
+        else if (strcasecmp(victims[i].status, "Rescued") == 0)
             rescued++;
     }
 
@@ -230,41 +297,46 @@ void victimRegistryMenu() {
         printf("\n========== Victim Registry ==========\n");
         printf("1. Register New Victim\n");
         printf("2. Display All Victims\n");
-        printf("3. Search Victim by Keyword\n");
-        printf("4. Update Victim Status\n");
-        printf("5. View Summary\n");
+        printf("3. Search Victim by Id\n");
+        printf("4. Search Victim by Keyword\n");
+        printf("5. Update Victim Status\n");
+        printf("6. View Summary\n");
         printf("0. Back to Main Menu\n");
         printf("=====================================\n");
         printf("Enter choice: ");
-        scanf("%d", &choice);
+        scanf("%d", &choiceReg);
         while (getchar() != '\n');
 
         switch (choiceReg) {
-            case 1: 
-                registerVictim();     
+            case 1:
+                registerVictim();
                 break;
-            
-            case 2: 
-                displayAllVictims();  
+
+            case 2:
+                displayAllVictims();
                 break;
-            
-            case 3: 
-                searchVictimByKeyword(); 
+
+            case 3:
+                searchVictimByID();
                 break;
-            
-            case 4: 
-                updateVictimStatus(); 
+
+            case 4:
+                searchVictimByKeyword();
                 break;
-            
-            case 5: 
-                displayVictimSummary(); 
+
+            case 5:
+                updateVictimStatus();
                 break;
-            
-            case 0: 
-                printf("Returning to main menu...\n"); 
+
+            case 6:
+                displayVictimSummary();
                 break;
-            
-            default: 
+
+            case 0:
+                printf("Returning to main menu...\n");
+                break;
+
+            default:
                 printf("Invalid choice! Try again.\n");
         }
 
