@@ -27,9 +27,24 @@ struct rescueMissions{
 
 };
 
+struct sCamps{
+    int flocations;
+    int fCamps;
+    int fVictims;
+    int fCapacity;
+    int campX;
+    int campY;
+};
+
 void addRescueteam(struct rescueTeam team[], int *count ); 
 void viewRescueteam(struct rescueTeam team[], int count);
 int assignRescueteam(struct rescueMissions mission[], struct rescueTeam team[], int *count22, int *count); 
+
+int location(struct sCamps ss);
+int camps(char locations[][20],int size,struct sCamps ss);
+int capacity(int camp[],int size,struct sCamps ss);
+int special();
+int availability(struct sCamps ss,int campIDs[],int cSize,int campCap[],int space);
 
 char buffer[CHARMAX];
 
@@ -37,6 +52,7 @@ int main () {
 
     struct rescueTeam team[NOTEAM];
     struct rescueMissions mission[NOMISSION];
+    struct sCamps ss;
     int count = 0, count2 = 0;
     int choice;
 
@@ -114,7 +130,41 @@ int main () {
                 break;
 
             case 4 :
+                
+                for(int i=1;i<=20;++i){
+                      printf("-");
+                }
 
+                printf("Shelter Camps");
+
+                for(int j=1;j<=20;++j){
+                       printf("-");
+                 }
+
+                printf("\n");
+
+                for(int k=1;k<=53;++k){
+                         printf("-");
+                 }
+ 
+                 printf("\n\n");
+
+                 printf("Enter total number of locations\n");
+                 scanf("%d",&ss.flocations);
+
+                 printf("\n\n");
+
+                 printf("Enter total number of shelter Camps\n");
+                 scanf("%d",&ss.fCamps);
+
+                 printf("\n\n");
+
+                 printf("Enter number of victims\n");
+                 scanf("%d",&ss.fVictims);
+
+                printf("\n\n");
+
+                location(ss);
                
                 break;
 
