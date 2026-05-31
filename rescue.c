@@ -1,28 +1,43 @@
 #include<stdio.h>
 #include<string.h>
 #include<stdlib.h>
+#include<float.h>
 
 #define CHARMAX 50
-#define NOTEAM 2
+#define NOTEAM 5
+#define NOMISSION 5
 
 struct rescueTeam{
     int teamID;
     char teamName[CHARMAX];
     int memberCount;
     char vehicleType[CHARMAX];
+    int teamX;
+    int teamY;
     int availability;
+};
+
+struct rescueMissions{
+    int missionID;
+    char rescueMission[CHARMAX];
+    int teamID;
+    int victimX;    // Location track from coordinates
+    int victimY;
+    int state;
+
 };
 
 void addRescueteam(struct rescueTeam team[], int *count ); 
 void viewRescueteam(struct rescueTeam team[], int count);
+int assignRescueteam(struct rescueMissions mission[], struct rescueTeam team[], int *count22, int *count); 
 
 char buffer[CHARMAX];
 
 int main () {
 
     struct rescueTeam team[NOTEAM];
-
-    int count = 0;
+    struct rescueMissions mission[NOMISSION];
+    int count = 0, count2 = 0;
     int choice;
 
     do{
@@ -33,7 +48,7 @@ int main () {
         printf("3. Supply Management \n");
         printf("4. Shelter Camps \n");
         printf("5. Incident Reports \n");
-        printf("6. Exit \n");
+        printf("6. Exit \n\n");
 
         printf("Enter Your Choise : ");
         fgets(buffer, CHARMAX, stdin);
@@ -53,7 +68,9 @@ int main () {
 
                     printf("1. Add Reascue Team : \n");
                     printf("2. View Reascue Team : \n");
-                       
+                    printf("3. Assign Rescue Teams : \n");
+                    printf("4. Track Rescue Missions : \n");
+
                     printf("Enter Your Choice : ");
                     fgets(buffer, CHARMAX, stdin);
                     buffer[strcspn(buffer, "\n")] = '\0';
@@ -79,7 +96,13 @@ int main () {
 
                             viewRescueteam(team, count);              
                             break;
+                        
+                        case 3 :
+                            assignRescueteam(mission, team, &count2, &count);
+                            break;
 
+                        case 4 :
+                            trackMission(team, mission);
 
                     }
 
@@ -131,13 +154,22 @@ void addRescueteam(struct rescueTeam team[], int *count ) {
     printf("Members Count : ");
     fgets(buffer, CHARMAX, stdin);
     buffer[strcspn(buffer, "\n")] = '\0';
-    int noMember = atoi(buffer);
-    team[*count].memberCount = noMember;
+    team[*count].memberCount = atoi(buffer);
     
     printf("Enter Vehicle Type : ");
     fgets(team[*count].vehicleType, CHARMAX, stdin);
     team[*count].vehicleType[strcspn(team[*count].vehicleType, "\n")] = '\0';
 
+    printf("Enter Team X coordinates : ");
+    fgets(buffer, CHARMAX, stdin);
+    buffer[strcspn(buffer, "\n")] = '\0';
+    team[*count].teamX = atoi(buffer);
+
+    printf("Enter Team Y coordinates : ");
+    fgets(buffer, CHARMAX, stdin);
+    buffer[strcspn(buffer, "\n")] = '\0';
+    team[*count].teamY = atoi(buffer);
+    
     team[*count].availability = 1;
 
     (*count)++;
@@ -159,6 +191,89 @@ void viewRescueteam(struct rescueTeam team[], int count) {
         printf("Status = %s \n", team[i].availability ? "Available" : "busy");
 
     }
+
+
+}
+
+int assignRescueteam(struct rescueMissions mission[], struct rescueTeam team[], int *count2, int *count) {
+    
+    mission[count].missionID = *count2;
+
+    printf("Enter Mission Type (Search,Rescue,Evacuation) : ");
+    fgets(mission[*count2].rescueMission, CHARMAX, stdin);
+    mission[*count2].rescueMission[strcspn(mission[*count2].rescueMission, "\n")] = '\0';
+    
+   /* printf("Enter Priority Level (1-5) : ");
+    fgets(buffer, CHARMAX, stdin);
+    buffer[strcspn(buffer, "\n")] = '\0';
+    mission[*count2].proirityLevel = atoi(buffer);*/
+
+    printf("Enter Victim X coordinates : ");
+    fgets(buffer, CHARMAX, stdin);
+    buffer[strcspn(buffer, "\n")] = '\0';
+    mission[*count2].victimX = atoi(buffer);
+
+    printf("Enter Victim Y coordinates : ");
+    fgets(buffer, CHARMAX, stdin);
+    buffer[strcspn(buffer, "\n")] = '\0';
+    mission[*count2].victimY = atoi(buffer);
+
+    (*count2)++;
+
+    float distance;
+    float minDistance = FLT_MAX;
+    int matchTeam = -1;
+
+    for(int i = 0; i < *count; i++){
+
+        float distance = (team[i].teamX - mission[i].victimX) * (team[i].teamX - mission[i].victimX);
+        if(distance < minDistance && team[i].availability == 1 ) {
+            
+            minDistance = distance;
+            matchTeam = i;                          // select proper rescue team from distance
+    
+        } 
+        
+    }
+    if(matchTeam == -1){
+    
+        printf("No Rescue Team Found \n");
+        return 0;
+    }
+    
+    team[matchTeam].availability = 0;
+
+    mission[*count].teamID = matchTeam;
+    mission[*count].state = 0;
+
+    printf("Mission Assigned Successfully \n");
+    printf("Assigned Team %s", team[matchTeam].teamName);
+
+
+
+}
+
+
+void trackMission(struct reascueTeam team[], struct rescueMissions mission[] ){
+
+    printf("=========Current Rescue Mission Details==========\n");
+
+    for(int i = 0; i < *count2; i++) {
+
+        printf("Mission ID = %d \n", mission[i].missionID);
+        printf("Mission Type = %s \n", mission[i].rescueMission);
+        printf("Team ID = %d \n", mission[i].teamID);
+        printf("Mission State = %s \n", mission[i].state ? "Finished" : "Ongoing");
+    }
+    
+    
+        
+
+
+    }
+
+
+}
 
 
 }
