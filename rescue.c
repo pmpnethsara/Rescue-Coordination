@@ -3,7 +3,7 @@
 #include<stdlib.h>
 #include<float.h>
 
-#define CHARMAX 50
+#define CHARMAX 100
 #define NOTEAM 5
 #define NOMISSION 5
 
@@ -82,14 +82,6 @@ char buffer[CHARMAX];
 
 //--------------------
 
-struct sCamps{
-    int flocations;
-    int fCamps;
-    int fVictims;
-    int fCapacity;
-    int campX;
-    int campY;
-};
  
 int location(struct sCamps ss);
 int camps(char locations[][20],int size,struct sCamps ss);
@@ -594,11 +586,11 @@ void viewRescueteam(struct rescueTeam team[], int count) {
 
     for(int i = 0; i < count; i++) {
 
-        printf("Team ID = %d \n", team[i].teamID);
-        printf("Team Name = %s \n", team[i].teamName);
-        printf("Members = %d \n", team[i].memberCount);
-        printf("vehicle Type = %s \n", team[i].vehicleType);
-        printf("Status = %s \n", team[i].availability ? "Available" : "busy");
+        printf("Team ID       = %d \n", team[i].teamID);
+        printf("Team Name     = %s \n", team[i].teamName);
+        printf("Members       = %d \n", team[i].memberCount);
+        printf("vehicle Type  = %s \n", team[i].vehicleType);
+        printf("Status        = %s \n", team[i].availability ? "Available" : "busy");
 
     }
 
@@ -663,10 +655,10 @@ void trackMission(struct rescueTeam team[], struct rescueMissions mission[], int
 
     for(int i = 0; i < *count2; i++) {
 
-        printf("Mission ID = %d \n", mission[i].missionID);
-        printf("Mission Type = %s \n", mission[i].rescueMission);
-        printf("Team ID = %d \n", mission[i].teamID);
-        printf("Mission State = %s \n", mission[i].state ? "Finished" : "Ongoing");
+        printf("Mission ID        = %d \n", mission[i].missionID);
+        printf("Mission Type      = %s \n", mission[i].rescueMission);
+        printf("Team ID           = %d \n", mission[i].teamID);
+        printf("Mission State     = %s \n", mission[i].state ? "Finished" : "Ongoing");
     }
 
     int id;
@@ -705,11 +697,11 @@ void performanceReport(struct rescueTeam team[], int count) {
             successRate = ((float)team[i].completedMissions / team[i].totalMissions) * 100;
         }
 		
-		printf("Team ID = %d\n", team[i].teamID);
-        printf("Team Name = %s\n", team[i].teamName);
-        printf("Total Missions = %d\n", team[i].totalMissions);
-        printf("Completed Missions = %d\n", team[i].completedMissions);
-        printf("Success Rate = %.2f%%\n", successRate);
+		printf("Team ID              = %d\n", team[i].teamID);
+        printf("Team Name            = %s\n", team[i].teamName);
+        printf("Total Missions       = %d\n", team[i].totalMissions);
+        printf("Completed Missions   = %d\n", team[i].completedMissions);
+        printf("Success Rate         = %.2f%%\n", successRate);
 
 		if(team[i].completedMissions > team[bestTeam].completedMissions) {
 
