@@ -5,7 +5,10 @@
 #include<float.h>
 
 #define CHARMAX 100
-#define TEAMS 5
+#define TEAMS 50
+
+#define MAX_ITEMS 100
+#define MAX_SPECIALS 50
 
 
 struct Victim {
@@ -30,6 +33,29 @@ struct rescueTeam{
 	int totalMissions;
     int completedMissions;
 };
+
+struct supply
+{
+    int supply_id;
+    char main_category[50];
+    char sub_category[30];
+    char item_name[20];
+    double quantity;
+    double low_limit;
+};
+
+struct supply list[MAX_ITEMS];
+int item_count = 0;
+int next_id = 1;
+
+struct specialrequest
+{
+    char item_name[50];
+    int target_camp_id;
+};
+
+struct specialrequest special_list[MAX_SPECIALS];
+int special_count = 0;
 
 
 struct sCamps{
@@ -79,6 +105,14 @@ void searchRescueName(struct rescueTeam team[]);
 void trackRescueTeam(struct rescueTeam team[], struct Incident missions[], int targetID);
 void addDefaultTeams(struct rescueTeam team[], int *count);
 
+void addfood();
+void viewallitems();
+void checklowstock();
+void distributeTocamp();
+void addspecial();
+void viewspecial();
+
+double getfixedLimits();
 
 int location(struct sCamps ss);
 int camps(char locations[][20],int size,struct sCamps ss);
@@ -148,9 +182,43 @@ int main () {
                 break;
 
             case 4 :
+			
+				    int choise;
+					do {
+						printf("\n___SUPPPLY MANAGEMENT SYSTEM___\n\n");
+						printf("1. Add Food Supplies\n");
+						printf("2. View All Items & ID\n");
+						printf("3. View Low Stock Items\n");
+						printf("4. Distribute Supplies To Camp\n");
+						printf("5. Add Special Needed Items\n");
+						printf("6. View Special Request List\n ");
+						printf("7. Exits\n");
 
-                 
-                break;
+						printf("Enter your Choise : ");
+						scanf("%d",&choise);
+
+						switch (choise)
+						{
+							case 1: addfood();
+								break;
+							case 2: viewallitems();
+								break;
+							case 3: checklowstock();
+								break;
+							case 4: distributeTocamp();
+								break;
+							case 5: addspecial();
+								break;
+							case 6: viewspecial();
+								break;
+							case 7: printf("\nEND PROGRAM\n");
+								break;
+							default: printf("\nInvalid Choice! Please Enter Valid Number. \n");
+						}
+				}
+				while (choise<=7);
+				
+				break;
 
             case 5 :
                 
@@ -1310,7 +1378,7 @@ void performanceReport(struct rescueTeam team[], int count) {
     }
 
     printf("===== BEST PERFORMING TEAM =====\n\n");
-    printf("Team Name          = %s\n", team[bestTeam].teamName);
+    printf("Team Name = %s\n", team[bestTeam].teamName);
     printf("Completed Missions = %d\n", team[bestTeam].completedMissions);
 	
 	printf("\n\n");
@@ -1334,7 +1402,7 @@ void addDefaultTeams(struct rescueTeam team[], int *count) {
 
     // Team 1
     team[*count].teamID = *count;
-    strcpy(team[*count].teamName, "Mora Rescue");
+    strcpy(team[*count].teamName, "Alpha Rescue");
     team[*count].memberCount = 8;
     strcpy(team[*count].vehicleType, "Boat");
     team[*count].teamX = 10;
@@ -1347,7 +1415,7 @@ void addDefaultTeams(struct rescueTeam team[], int *count) {
 
     // Team 2
     team[*count].teamID = *count;
-    strcpy(team[*count].teamName, "Shark Team");
+    strcpy(team[*count].teamName, "Bravo Team");
     team[*count].memberCount = 6;
     strcpy(team[*count].vehicleType, "Ambulance");
     team[*count].teamX = 20;
@@ -1371,6 +1439,247 @@ void addDefaultTeams(struct rescueTeam team[], int *count) {
 
     (*count)++;
 
+}
+
+
+
+void addfood()
+{
+    char main_name[20];
+    char sub_name[20];
+    int main_ch,item_ch;
+    double input_qut;
+
+    printf ("Add Food Supplies\n");
+    printf("1.Baby Foods\n 2.Adults Foods\n Enter the Number : \n");
+    scanf("%d",&main_ch);
+
+    switch (main_ch)
+    {
+    case 1:
+        strcpy (main_name, "Baby Food\n");
+        printf ("Select BAby Food\n 1.Milk Powder\n 2.Biscuits\n 3.Other\n Enter Choise (1-3): ");
+        scanf("%d",&item_ch);
+
+        getchar();
+        switch (item_ch)
+        {
+        case 1: strcpy(sub_name, "Milk Powder");
+            break;
+        case 2:strcpy(sub_name, "Biscuit");
+            break;
+       default:
+                printf("Enter Custom Baby Food Name: ");
+                fgets(main_name, sizeof(main_name), stdin);
+                main_name[strcspn(main_name, "\n")] = 0;
+                break;
+        }
+    break;
+    case 2:
+        strcpy(main_name, "Adult Food");
+        printf("\nSelect Adult Food:\n 1.Rice \n 2.Dhal\n 3.Suger\n 4.Coconut \n 5.Other\n Enter choice (1-5): ");
+        scanf("%d", &item_ch);
+        getchar();
+
+        switch (item_ch) {
+            case 1:
+                strcpy(sub_name, "Rice");
+                break;
+            case 2:
+                strcpy(sub_name, "Dhal");
+                break;
+            case 3:
+                strcpy(sub_name, "Suger");
+                break;
+            case 4:
+                strcpy(sub_name, "Coconut");
+                break;
+            default:
+                printf("Enter Custom Adult Food Name: ");
+                fgets(sub_name, sizeof(sub_name), stdin);
+                sub_name[strcspn(sub_name, "\n")] = 0;
+                break;
+        }
+        break;
+
+    default:
+        printf("Invalid Category Choice! Please enter 1 or 2.\n");
+        break;
+
+    }
+
+    printf("Enter Quantity: ");
+    scanf("%lf",&input_qut);
+
+
+    for (int i = 0; i < item_count; i++) {
+        if (strcmp(list[i].item_name, sub_name) == 0) {
+            list[i].quantity += input_qut;
+            printf("\n[UPDATE] '%s' already exists (ID: %d). Updated stock! New Total: %.2f\n",
+                   list[i].item_name, list[i].supply_id, list[i].quantity);
+            return;
+        }
+    }
+
+    if (item_count >= MAX_ITEMS) {
+        printf("\n[ERROR] Inventory is full!\n");
+        return;
+    }
+
+    if (item_count >= MAX_ITEMS) {
+        printf("\n[ERROR] Inventory is full!\n");
+        return;
+    }
+
+    struct supply item;
+    item.supply_id = next_id++;
+    strcpy(item.main_category, "Food");
+    strcpy(item.sub_category, main_name);
+    strcpy(item.item_name, sub_name);
+    item.quantity = input_qut;
+    item.low_limit = getfixedLimits(item.item_name);
+
+    list[item_count] = item;
+    item_count++;
+
+    printf("\n[SUCCESS] New Food Item added! ID: %d | Name: %s | Qty: %.2f\n", item.supply_id, item.item_name, item.quantity);
+}
+
+void viewallitems() //function 2
+{
+    if (item_count == 0) {
+        printf("\n[INFO] Inventory is empty! No items registered yet.\n");
+        return;
+    }
+
+    printf("\n___CURRENT WAREHOUSE INVENTORY LIST___\n");
+    for (int i = 0; i < item_count; i++) {
+        printf("Item ID: %d | Name: %-25s | Category: %-20s | Stock: %.2f\n",
+               list[i].supply_id, list[i].item_name, list[i].sub_category, list[i].quantity);
+    }
+}
+
+
+// FUNCTION 3
+void checklowstock() {
+    if (item_count == 0) {
+        printf("\n[INFO] Inventory is empty! No items to check.\n");
+        return;
+    }
+
+    int has_low_stock = 0;
+    printf("\n___ITEMS THAT HAVE REACHED MINIMUM LIMIT___\n");
+
+    for (int i = 0; i < item_count; i++) {
+        if (list[i].quantity <= list[i].low_limit) {
+            has_low_stock = 1;
+            printf("ID: %d | Item: %-20s | Current Qty: %-8.2f | Fixed Limit: %.2f [CRITICAL]\n",
+                   list[i].supply_id, list[i].item_name, list[i].quantity, list[i].low_limit);
+        }
+    }
+
+    if (!has_low_stock) {
+        printf("All items have sufficient stock. No items below the minimum limit.\n");
+    }
+}
+
+
+//FUNCTION 4:
+void distributeTocamp() {
+    if (item_count == 0) {
+        printf("\n[INFO] Inventory is empty! No items available to distribute.\n");
+        return;
+    }
+
+    int search_id, found = 0, camp_id;
+    double req_quantity;
+
+    printf("\n___DISTRIBUTE SUPPLIES TO CAMP___\n");
+    printf("Enter Supply ID to distribute: ");
+    scanf("%d", &search_id);
+
+    for (int i = 0; i < item_count; i++) {
+        if (list[i].supply_id == search_id) {
+            found = 1;
+            printf("Item Found: %s (%s) | Available Stock: %.2f\n", list[i].item_name, list[i].main_category, list[i].quantity);
+
+            printf("Enter Destination Camp ID: ");
+            scanf("%d", &camp_id);
+
+            printf("Enter Quantity to Send: ");
+            scanf("%lf", &req_quantity);
+
+            if (req_quantity > list[i].quantity) {
+                printf("\n[ERROR] Not enough stock available!\n");
+            } else {
+                list[i].quantity -= req_quantity;
+                printf("\n[SUCCESS] Sent %.2f of %s to Camp %d successfully.\n", req_quantity, list[i].item_name, camp_id);
+                printf("Remaining Stock for %s: %.2f\n", list[i].item_name, list[i].quantity);
+
+                if (list[i].quantity <= list[i].low_limit) {
+                    printf("[ALERT] Warning! %s stock has reached or dropped below its minimum limit (%.2f)!\n", list[i].item_name, list[i].low_limit);
+                }
+            }
+            break;
+        }
+    }
+
+    if (!found) {
+        printf("\n[ERROR] Supply ID not found!\n");
+    }
+}
+
+
+//FUNCTION 5
+void addspecial()
+{
+    if (special_count >= MAX_SPECIALS) {
+        printf("\n[ERROR] Special Request List is full!\n");
+        return;
+    }
+
+    struct specialrequest req;
+    getchar();
+
+    printf("\n__ADD SPECIAL NEEDED ITEM (FUTURE REQUEST)__\n");
+    printf("Enter Special Item Name: ");
+    fgets(req.item_name, sizeof(req.item_name), stdin);
+    req.item_name[strcspn(req.item_name, "\n")] = 0;
+
+    printf("Enter Target Camp ID: ");
+    scanf("%d", &req.target_camp_id);
+
+    special_list[special_count] = req;
+    special_count++;
+
+    printf("\n[SUCCESS] Special request for '%s' saved successfully!\n", req.item_name);
+}
+
+
+//function 6
+void viewspecial() {
+    if (special_count == 0) {
+        printf("\n[INFO] No special requested items at the moment.\n");
+        return;
+    }
+
+    printf("\n__SPECIAL REQUEST LIST (FUTURE PROCUREMENT)__\n");
+    for (int i = 0; i < special_count; i++) {
+        printf("%d) Item Name: %-25s | Target Camp ID: %02d\n",
+               i + 1, special_list[i].item_name, special_list[i].target_camp_id);
+    }
+}
+
+
+double getfixedLimits(char name[]) {
+    if (strcmp(name, "Rice") == 0) return 250.0;
+    if (strcmp(name, "Dhal") == 0) return 100.0;
+    if (strcmp(name, "Sugar") == 0) return 50.0;
+    if (strcmp(name, "Coconut") == 0) return 200.0;
+    if (strcmp(name, "Milk Powder") == 0) return 20.0;
+    if (strcmp(name, "Biscuit") == 0) return 25.0;
+
+    return 15.0;
 }
 
 
