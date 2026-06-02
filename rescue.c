@@ -354,22 +354,44 @@ while(1){
     }
 }
 
-    printf("Enter severity (1 = Low, 2 = Medium, 3 = High): ");
-    scanf("%d", &missions[incCount].severity);
+		printf("Enter severity (1 = Low, 2 = Medium, 3 = High): ");
+        fgets(buffer, sizeof(buffer), stdin);
+        buffer[strcspn(buffer, "\n")] = '\0';
+
+        missions[incCount].severity = atoi(buffer);
 
 
     while (missions[incCount].severity < 1 || missions[incCount].severity > 3) {
         printf("Invalid severity. Please enter 1, 2, or 3: ");
-        scanf("%d", &missions[incCount].severity);
+        
+		fgets(buffer, sizeof(buffer), stdin);
+        buffer[strcspn(buffer, "\n")] = '\0';
+        missions[incCount].severity = atoi(buffer);
 
     }
 
 
     printf("Enter location: ");
-    scanf(" %[^\n]", missions[incCount].location);
+    fgets(missions[incCount].location, 100, stdin);
+    missions[incCount].location[strcspn(missions[incCount].location, "\n")] = '\0';
+
 
 
     missions[incCount].resolved = 0;
+	
+	
+	printf("Enter incident X coordinates: ");
+    fgets(buffer, sizeof(buffer), stdin);
+    buffer[strcspn(buffer, "\n")] = '\0';
+    missions[incCount].incX = atoi(buffer);
+
+	
+	
+	printf("Enter incident Y coordinates: ");
+    fgets(buffer, sizeof(buffer), stdin);
+    buffer[strcspn(buffer, "\n")] = '\0';
+    missions[incCount].incY = atoi(buffer);
+	
 
 
     printf("\nIncident #%d logged successfully.\n", missions[incCount].inc_id);
@@ -994,8 +1016,8 @@ void rescueTeamMenu(struct rescueTeam team[], struct Incident missions[], int *c
 
         printf("\n1. Add Reascue Team \n");
         printf("2. View Reascue Team \n");
-		printf("3. Assign Rescue Teams \n");
-        printf("4. Track Rescue Missions \n");
+		printf("3. Search Rescue Team Team ID or Team Name \n");
+        printf("4. Assign Rescue Teams  \n");
 		printf("5. Performance Report \n");
 		printf("6. Back to Main Manu \n");
 
@@ -1017,11 +1039,12 @@ void rescueTeamMenu(struct rescueTeam team[], struct Incident missions[], int *c
                 break;
                         
             case 3 :
-                assignRescueteam(missions, team, *count);
+				searchRescueByIdOrName(team);
+                
                 break;
 
             case 4 :
-                trackRescueTeam(team, missions, incCount);
+                assignRescueteam(missions, team, *count);
 				break;
 
             case 5 :
@@ -1138,12 +1161,9 @@ void assignRescueteam(struct Incident missions[], struct rescueTeam team[], int 
 
     for(int i = 0; i < incCount; i++) {
 
-        if(missions[i].resolved == 0 && missions[i].teamID == -1) {
+        if(missions[i].resolved == 0 ) {
 
-            printf("Mission ID : %d | Type : %s | Location : %s\n",
-                   missions[i].inc_id,
-                   missions[i].type,
-                   missions[i].location);
+            printf("Mission ID : %d | Type : %s | Location : %s\n", missions[i].inc_id, missions[i].type, missions[i].location);
         }
     }
 
@@ -1157,7 +1177,7 @@ void assignRescueteam(struct Incident missions[], struct rescueTeam team[], int 
 
         for(int i = 0; i < incCount; i++) {
 
-            if(missions[i].inc_id == missionID && missions[i].resolved == 0 && missions[i].teamID == -1) {
+            if(missions[i].inc_id == missionID && missions[i].resolved == 0 ) {
 
                 missionIndex = i;
                 break;
