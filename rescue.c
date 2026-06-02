@@ -93,15 +93,15 @@ void inputStatus(char *status);
 
 // rescue team main Functions
 void rescueTeamMenu(struct rescueTeam team[], struct Incident missions[], int *count, int incCount);
-void addRescueteam(struct rescueTeam team[], int *count ); 
+void addRescueteam(struct rescueTeam team[], int *count );
 void viewallRescueteam(struct rescueTeam team[], int count);
 void searchRescueByIdOrName(struct rescueTeam team[]);
 void assignRescueteam(struct Incident missions[], struct rescueTeam team[], int count);
-void performanceReport(struct rescueTeam team[], int count); 
+void performanceReport(struct rescueTeam team[], int count);
 
 
 void searchRescueID(struct rescueTeam team[]);
-void searchRescueName(struct rescueTeam team[]);         
+void searchRescueName(struct rescueTeam team[]);
 void trackRescueTeam(struct rescueTeam team[], struct Incident missions[], int targetID);
 void addDefaultTeams(struct rescueTeam team[], int *count);
 
@@ -143,6 +143,7 @@ int main () {
     struct sCamps ss;
     int count = 0, count2 = 0;
     int choice;
+    int choise;
     char input[20];
 	addDefaultTeams(team, &count);
 
@@ -164,26 +165,25 @@ int main () {
 
         switch(choice) {
 
-            case 1: 
-            
+            case 1:
+
                 logIncident();
                 break;
 
             case 2:
 
-                victimRegistryMenu();                
-				
+                victimRegistryMenu();
+
                 break;
 
             case 3 :
-			
+
                 rescueTeamMenu(team, missions, &count, incCount);
-                
+
                 break;
 
             case 4 :
-			
-				    int choise;
+
 					do {
 						printf("\n___SUPPPLY MANAGEMENT SYSTEM___\n\n");
 						printf("1. Add Food Supplies\n");
@@ -195,7 +195,7 @@ int main () {
 						printf("7. Exits\n");
 
 						printf("Enter your Choise : ");
-						scanf("%d",&choise);
+						scanf("%d", &choise);
 
 						switch (choise)
 						{
@@ -216,17 +216,17 @@ int main () {
 							default: printf("\nInvalid Choice! Please Enter Valid Number. \n");
 						}
 				}
-				while (choise<=7);
-				
+				while (choise <= 7);
+
 				break;
 
             case 5 :
-                
-            
+
+
 
               printf("======================= Shelter Camps ======================\n");
               printf("============================================================\n");
-              
+
 
                printf("\n\n");
 
@@ -249,7 +249,7 @@ int main () {
                 printf("\n\n");
 
                 location(ss);
-  
+
                 break;
 
             case 6 :
@@ -299,7 +299,7 @@ void incidentMenu(struct rescueTeam team[]) {
 
 
         switch (choice) {
-           
+
             case 1:
                 displayAllmissions();
                 break;
@@ -363,7 +363,7 @@ while(1){
 
     while (missions[incCount].severity < 1 || missions[incCount].severity > 3) {
         printf("Invalid severity. Please enter 1, 2, or 3: ");
-        
+
 		fgets(buffer, sizeof(buffer), stdin);
         buffer[strcspn(buffer, "\n")] = '\0';
         missions[incCount].severity = atoi(buffer);
@@ -378,20 +378,20 @@ while(1){
 
 
     missions[incCount].resolved = 0;
-	
-	
+
+
 	printf("Enter incident X coordinates: ");
     fgets(buffer, sizeof(buffer), stdin);
     buffer[strcspn(buffer, "\n")] = '\0';
     missions[incCount].incX = atoi(buffer);
 
-	
-	
+
+
 	printf("Enter incident Y coordinates: ");
     fgets(buffer, sizeof(buffer), stdin);
     buffer[strcspn(buffer, "\n")] = '\0';
     missions[incCount].incY = atoi(buffer);
-	
+
 
 
     printf("\nIncident #%d logged successfully.\n", missions[incCount].inc_id);
@@ -506,7 +506,7 @@ void resolveIncident(struct rescueTeam team[]) {
                 missions[i].resolved = 1;
                 printf("Incident #%d has been marked as RESOLVED.\n", targetID);
             }
-			
+
 			trackRescueTeam(team, missions, targetID);
 
             found = 1;
@@ -977,28 +977,28 @@ void victimRegistryMenu() {
         choiceReg = atoi(buffer);
 
         switch (choiceReg) {
-            case 1: 
-                registerVictim();        
+            case 1:
+                registerVictim();
                 break;
-            case 2: 
-                displayAllVictims();     
+            case 2:
+                displayAllVictims();
                 break;
-            case 3: 
-                searchVictimByID();      
+            case 3:
+                searchVictimByID();
                 break;
-            case 4: 
-                searchVictimByKeyword(); 
+            case 4:
+                searchVictimByKeyword();
                 break;
-            case 5: 
-                updateVictimStatus();    
+            case 5:
+                updateVictimStatus();
                 break;
-            case 6: 
-                displayVictimSummary();  
+            case 6:
+                displayVictimSummary();
                 break;
-            case 0: 
-                printf("Returning to main menu...\n"); 
+            case 0:
+                printf("Returning to main menu...\n");
                 break;
-            default: 
+            default:
                 printf("Invalid choice! Try again.\n");
         }
 
@@ -1009,13 +1009,13 @@ void victimRegistryMenu() {
 
 
 void rescueTeamMenu(struct rescueTeam team[], struct Incident missions[], int *count,  int incCount){
-	
+
 	int choice2;
 	do{
-                   
 
-        printf("\n1. Add Reascue Team \n");
-        printf("2. View Reascue Team \n");
+        printf("\n=========== Rescue Team Management ==========\n");
+        printf("\n1. Add Rescue Team \n");
+        printf("2. View Rescue Team \n");
 		printf("3. Search Rescue Team Team ID or Team Name \n");
         printf("4. Assign Rescue Teams  \n");
 		printf("5. Performance Report \n");
@@ -1031,16 +1031,16 @@ void rescueTeamMenu(struct rescueTeam team[], struct Incident missions[], int *c
             case 1 :
 
                 addRescueteam(team, count);
-                break;   
-
-            case 2 : 
-
-				viewallRescueteam(team, *count);              
                 break;
-                        
+
+            case 2 :
+
+				viewallRescueteam(team, *count);
+                break;
+
             case 3 :
 				searchRescueByIdOrName(team);
-                
+
                 break;
 
             case 4 :
@@ -1050,24 +1050,24 @@ void rescueTeamMenu(struct rescueTeam team[], struct Incident missions[], int *c
             case 5 :
 				performanceReport(team, *count);
 				break;
-			
+
 			case 6 :
 				printf("=========== Back to Main Menu ========== \n");
 				break;
-				
+
 			default :
-			
+
 				printf("Invalid Choice Try Again !\n");
 				break;
-				
+
 		}
 
 	}while(choice2 != 6);
-		
+
 }
 
 void addRescueteam(struct rescueTeam team[], int *count ) {
-    
+
     if(*count >= TEAMS) {
         printf("Maximum rescue team limit reached!\n");
         return;
@@ -1078,7 +1078,7 @@ void addRescueteam(struct rescueTeam team[], int *count ) {
     printf("Enter Team Name: ");
     fgets(team[*count].teamName, CHARMAX, stdin);
     team[*count].teamName[strcspn(team[*count].teamName, "\n")] = '\0';
-    
+
     while(1) {
 
         printf("Members Count (1 - 50): ");
@@ -1092,12 +1092,12 @@ void addRescueteam(struct rescueTeam team[], int *count ) {
             printf("Invalid member count! Enter between 1 and 50.\n");
         }
         else {
-			
+
             break;
         }
-		
+
     }
-    
+
     printf("Enter Vehicle Type : ");
     fgets(team[*count].vehicleType, CHARMAX, stdin);
     team[*count].vehicleType[strcspn(team[*count].vehicleType, "\n")] = '\0';
@@ -1111,16 +1111,16 @@ void addRescueteam(struct rescueTeam team[], int *count ) {
     fgets(buffer, CHARMAX, stdin);
     buffer[strcspn(buffer, "\n")] = '\0';
     team[*count].teamY = atoi(buffer);
-    
+
     team[*count].availability = 1;
 	team[*count].totalMissions = 0;
     team[*count].completedMissions = 0;
-	
+
 	printf("\nRescue Team Added Successfully!\n");
     printf("Team ID = %d\n", team[*count].teamID);
 
     (*count)++;
-     
+
 
 
 }
@@ -1229,7 +1229,7 @@ void assignRescueteam(struct Incident missions[], struct rescueTeam team[], int 
 
 
 void trackRescueTeam(struct rescueTeam team[], struct Incident missions[], int targetID){
-	
+
     for(int i = 0; i < incCount; i++) {
 
         if(missions[i].inc_id == targetID) {
@@ -1254,43 +1254,43 @@ void trackRescueTeam(struct rescueTeam team[], struct Incident missions[], int t
 
 
 void searchRescueByIdOrName(struct rescueTeam team[]) {
-	
+
 	int choice;
-	
-	
+
+
 	do{
 		printf("1. Search Rescue Team By ID \n");
 		printf("2. Search Rescue Team By Name \n");
 		printf("3. Back To Main Menu \n\n");
-		
+
 		printf("Enter Choice: ");
 		fgets(buffer, CHARMAX, stdin);
 		buffer[strcspn(buffer, "\n")] = '\0';
 		choice = atoi(buffer);
-		
+
 		switch(choice) {
-			
+
 			case 1 :
 				searchRescueID(team);
 				break;
-				
+
 			case 2 :
 				searchRescueName(team);
 				break;
-				
+
 			case 3 :
 				printf("Back to Main Menu");
 				break;
-				
+
 			default :
 				printf("Invalied Choice Try Again!");
-			
+
 		}
-		
-		
-		
+
+
+
 	}while(choice != 3);
-	
+
 }
 
 
@@ -1356,7 +1356,7 @@ void searchRescueName(struct rescueTeam team[]) {
     }
 
     if(found == 0) {
-		
+
         printf("No Rescue Team Found!\n");
     }
 }
@@ -1370,9 +1370,9 @@ void performanceReport(struct rescueTeam team[], int count) {
         printf("No rescue teams registered.\n");
         return;
     }
-	
+
 	int bestTeam = 0;
-	
+
 	for(int i = 0; i < count; i++) {
 
         float successRate = 0;
@@ -1380,16 +1380,16 @@ void performanceReport(struct rescueTeam team[], int count) {
         if(team[i].totalMissions > 0) {
             successRate = ((float)team[i].completedMissions / team[i].totalMissions) * 100;
         }
-		
+
 		printf("Team ID              = %d\n", team[i].teamID);
         printf("Team Name            = %s\n", team[i].teamName);
         printf("Total Missions       = %d\n", team[i].totalMissions);
         printf("Completed Missions   = %d\n", team[i].completedMissions);
         printf("Success Rate         = %.2f%%\n", successRate);
-		
+
 		printf("----------------------------\n");
-		
-		
+
+
 
 		if(team[i].completedMissions > team[bestTeam].completedMissions) {
 
@@ -1400,11 +1400,11 @@ void performanceReport(struct rescueTeam team[], int count) {
     printf("===== BEST PERFORMING TEAM =====\n\n");
     printf("Team Name = %s\n", team[bestTeam].teamName);
     printf("Completed Missions = %d\n", team[bestTeam].completedMissions);
-	
+
 	printf("\n\n");
-	
+
 	printf("===== Team Performance Bar Chart =====\n\n");
-    
+
     for(int i = 0; i < count ; i ++) {
 
             printf("%s \t|", team[i].teamName);
@@ -1422,7 +1422,7 @@ void addDefaultTeams(struct rescueTeam team[], int *count) {
 
     // Team 1
     team[*count].teamID = *count;
-    strcpy(team[*count].teamName, "Alpha Rescue");
+    strcpy(team[*count].teamName, "Shark Rescue");
     team[*count].memberCount = 8;
     strcpy(team[*count].vehicleType, "Boat");
     team[*count].teamX = 10;
@@ -1435,7 +1435,7 @@ void addDefaultTeams(struct rescueTeam team[], int *count) {
 
     // Team 2
     team[*count].teamID = *count;
-    strcpy(team[*count].teamName, "Bravo Team");
+    strcpy(team[*count].teamName, "Mora Team");
     team[*count].memberCount = 6;
     strcpy(team[*count].vehicleType, "Ambulance");
     team[*count].teamX = 20;
