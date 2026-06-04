@@ -149,6 +149,7 @@ void displayHighSeverity();
 void displaySeverityGraph();
 void printSeverityLabel(int severity);
 void incidentMenu(struct rescueTeam team[]);
+void addDefultIncident();
 
 int main() {
     struct rescueTeam team[TEAMS];
@@ -888,9 +889,11 @@ void victimRegistryMenu() {
     } while(choiceReg != 0);
 }
 
+// ======================== Rescue Team =============================
+
 void rescueTeamMenu(struct rescueTeam team[], struct Incident missions[], int *count, int incCount) {
     int choice2;
-    
+
     do {
         printf("\n=========== Rescue Team Management ==========\n");
         printf("\n1. Add Rescue Team\n");
@@ -900,7 +903,7 @@ void rescueTeamMenu(struct rescueTeam team[], struct Incident missions[], int *c
         printf("5. Performance Report\n");
         printf("6. Back to Main Menu\n");
         printf("\nEnter Your Choice: ");
-        
+
         fgets(buffer, CHARMAX, stdin);
         buffer[strcspn(buffer, "\n")] = '\0';
         choice2 = atoi(buffer);
@@ -932,6 +935,7 @@ void rescueTeamMenu(struct rescueTeam team[], struct Incident missions[], int *c
 }
 
 void addRescueteam(struct rescueTeam team[], int *count) {
+
     if(*count >= TEAMS) {
         printf("Maximum rescue team limit reached!\n");
         return;
@@ -939,14 +943,23 @@ void addRescueteam(struct rescueTeam team[], int *count) {
 
     team[*count].teamID = *count + 1;
 
-    printf("Enter Team Name: ");
-    fgets(team[*count].teamName, CHARMAX, stdin);
-    team[*count].teamName[strcspn(team[*count].teamName, "\n")] = '\0';
+    while(1) {
+        printf("Enter Team Name: ");
+        fgets(team[*count].teamName, CHARMAX, stdin);
+        team[*count].teamName[strcspn(team[*count].teamName, "\n")] = '\0';
+
+        if(strlen(team[*count].teamName) == 0) {
+            printf("Team name cannot be empty!\n");
+        } else {
+            break;
+        }
+    }
 
     while(1) {
         printf("Members Count (1 - 50): ");
         fgets(buffer, CHARMAX, stdin);
         buffer[strcspn(buffer, "\n")] = '\0';
+
         team[*count].memberCount = atoi(buffer);
 
         if(team[*count].memberCount <= 0 || team[*count].memberCount > 50) {
@@ -956,19 +969,41 @@ void addRescueteam(struct rescueTeam team[], int *count) {
         }
     }
 
-    printf("Enter Vehicle Type: ");
-    fgets(team[*count].vehicleType, CHARMAX, stdin);
-    team[*count].vehicleType[strcspn(team[*count].vehicleType, "\n")] = '\0';
+    while(1) {
+        printf("Enter Vehicle Type: ");
+        fgets(team[*count].vehicleType, CHARMAX, stdin);
+        team[*count].vehicleType[strcspn(team[*count].vehicleType, "\n")] = '\0';
 
-    printf("Enter Team X coordinates: ");
-    fgets(buffer, CHARMAX, stdin);
-    buffer[strcspn(buffer, "\n")] = '\0';
-    team[*count].teamX = atoi(buffer);
+        if(strlen(team[*count].vehicleType) == 0) {
+            printf("Vehicle type cannot be empty!\n");
+        } else {
+            break;
+        }
+    }
 
-    printf("Enter Team Y coordinates: ");
-    fgets(buffer, CHARMAX, stdin);
-    buffer[strcspn(buffer, "\n")] = '\0';
-    team[*count].teamY = atoi(buffer);
+    while(1) {
+        printf("Enter Team X Coordinate: ");
+        fgets(buffer, CHARMAX, stdin);
+        buffer[strcspn(buffer, "\n")] = '\0';
+
+        if(sscanf(buffer, "%d", &team[*count].teamX) == 1) {
+            break;
+        } else {
+            printf("Invalid input! Enter a valid number.\n");
+        }
+    }
+
+    while(1) {
+        printf("Enter Team Y Coordinate: ");
+        fgets(buffer, CHARMAX, stdin);
+        buffer[strcspn(buffer, "\n")] = '\0';
+
+        if(sscanf(buffer, "%d", &team[*count].teamY) == 1) {
+            break;
+        } else {
+            printf("Invalid input! Enter a valid number.\n");
+        }
+    }
 
     team[*count].availability = 1;
     team[*count].totalMissions = 0;
@@ -997,7 +1032,8 @@ void viewallRescueteam(struct rescueTeam team[], int count) {
     }
 }
 
-void assignRescueteam(struct Incident missions[], struct rescueTeam team[], int count) {
+void assignRescueteam(struct Incident missions[], struct rescueTeam team[], int count) {  //Assign the nearest available rescue team to a selected mission
+
     if(incCount == 0) {
         printf("No missions available!\n");
         return;
@@ -1006,11 +1042,11 @@ void assignRescueteam(struct Incident missions[], struct rescueTeam team[], int 
     int missionID;
     int missionIndex = -1;
 
-    printf("\n===== ACTIVE MISSIONS =====\n");
+    printf("\n===== ACTIVE MISSIONS =====\n");   // Show available missions
 
     for(int i = 0; i < incCount; i++) {
         if(missions[i].resolved == 0) {
-            printf("Mission ID: %d | Type: %s | Location: %s\n", 
+            printf("Mission ID: %d | Type: %s | Location: %s\n",
                    missions[i].inc_id, missions[i].type, missions[i].location);
         }
     }
@@ -1038,13 +1074,12 @@ void assignRescueteam(struct Incident missions[], struct rescueTeam team[], int 
     float minDistance = FLT_MAX;
     int matchTeam = -1;
 
+// Find nearest available rescue team
     for(int i = 0; i < count; i++) {
         if(team[i].availability == 1) {
-            float distance = 
-                ((team[i].teamX - missions[missionIndex].incX) * 
-                 (team[i].teamX - missions[missionIndex].incX)) + 
-                ((team[i].teamY - missions[missionIndex].incY) * 
-                 (team[i].teamY - missions[missionIndex].incY));
+
+            //Calculate squared distance
+            float distance = ((team[i].teamX - missions[missionIndex].incX) * (team[i].teamX - missions[missionIndex].incX)) + ((team[i].teamY - missions[missionIndex].incY) * (team[i].teamY - missions[missionIndex].incY));
 
             if(distance < minDistance) {
                 minDistance = distance;
@@ -1059,8 +1094,8 @@ void assignRescueteam(struct Incident missions[], struct rescueTeam team[], int 
     }
 
     team[matchTeam].availability = 0;
-    team[matchTeam].totalMissions++;
-    missions[missionIndex].teamID = team[matchTeam].teamID;
+    team[matchTeam].totalMissions++;  // Assign team
+    missions[missionIndex].teamID = team[matchTeam].teamID;  // Link team ID to mission
 
     printf("\nMission Assigned Successfully!\n");
     printf("Assigned Team : %s\n", team[matchTeam].teamName);
@@ -1091,7 +1126,7 @@ void searchRescueByIdOrName(struct rescueTeam team[]) {
         printf("2. Search Rescue Team By Name\n");
         printf("3. Back To Main Menu\n\n");
         printf("Enter Choice: ");
-        
+
         fgets(buffer, CHARMAX, stdin);
         buffer[strcspn(buffer, "\n")] = '\0';
         choice = atoi(buffer);
@@ -1151,7 +1186,7 @@ void searchRescueName(struct rescueTeam team[]) {
             continue;
         }
 
-        if(strcasecmp(team[i].teamName, searchName) == 0) {
+        if(strcasecmp(team[i].teamName, searchName) == 0) {   // look same to human [strcasecmp]
             printf("\n===== Rescue Team Found =====\n");
             printf("Team ID       : %d\n", team[i].teamID);
             printf("Team Name     : %s\n", team[i].teamName);
@@ -1209,41 +1244,6 @@ void performanceReport(struct rescueTeam team[], int count) {
         }
         printf("\n");
     }
-}
-
-void addDefaultTeams(struct rescueTeam team[], int *count) {
-    team[*count].teamID = *count + 1;
-    strcpy(team[*count].teamName, "Shark Rescue");
-    team[*count].memberCount = 8;
-    strcpy(team[*count].vehicleType, "Boat");
-    team[*count].teamX = 10;
-    team[*count].teamY = 15;
-    team[*count].availability = 1;
-    team[*count].totalMissions = 8;
-    team[*count].completedMissions = 5;
-    (*count)++;
-
-    team[*count].teamID = *count + 1;
-    strcpy(team[*count].teamName, "Mora Team");
-    team[*count].memberCount = 6;
-    strcpy(team[*count].vehicleType, "Ambulance");
-    team[*count].teamX = 20;
-    team[*count].teamY = 25;
-    team[*count].availability = 1;
-    team[*count].totalMissions = 5;
-    team[*count].completedMissions = 2;
-    (*count)++;
-
-    team[*count].teamID = *count + 1;
-    strcpy(team[*count].teamName, "Rapid Response");
-    team[*count].memberCount = 10;
-    strcpy(team[*count].vehicleType, "Helicopter");
-    team[*count].teamX = 30;
-    team[*count].teamY = 40;
-    team[*count].availability = 1;
-    team[*count].totalMissions = 1;
-    team[*count].completedMissions = 1;
-    (*count)++;
 }
 
 void addfood() {
@@ -1714,7 +1714,7 @@ int availability(struct campSystem aa,struct sCamps cc){
             aa.totalVictims-=cc.campCap[a];
         }else{
             avaSpace=cc.campCap[a]-aa.totalVictims;
-            if(aa.totalVictims==0)
+            if(avaSpace==0)
                 printf("NOT Available");
             else
                 printf("%d spaces available",avaSpace);
@@ -1737,4 +1737,76 @@ int availability(struct campSystem aa,struct sCamps cc){
     }
 
     return 0;
+}
+void addDefaultTeams(struct rescueTeam team[], int *count) {
+    team[*count].teamID = *count + 1;
+    strcpy(team[*count].teamName, "Shark Rescue");
+    team[*count].memberCount = 8;
+    strcpy(team[*count].vehicleType, "Boat");
+    team[*count].teamX = 10;
+    team[*count].teamY = 15;
+    team[*count].availability = 1;
+    team[*count].totalMissions = 8;
+    team[*count].completedMissions = 5;
+    (*count)++;
+
+    team[*count].teamID = *count + 1;
+    strcpy(team[*count].teamName, "Mora Team");
+    team[*count].memberCount = 6;
+    strcpy(team[*count].vehicleType, "Ambulance");
+    team[*count].teamX = 20;
+    team[*count].teamY = 25;
+    team[*count].availability = 1;
+    team[*count].totalMissions = 5;
+    team[*count].completedMissions = 2;
+    (*count)++;
+
+    team[*count].teamID = *count + 1;
+    strcpy(team[*count].teamName, "Rapid Response");
+    team[*count].memberCount = 10;
+    strcpy(team[*count].vehicleType, "Helicopter");
+    team[*count].teamX = 30;
+    team[*count].teamY = 40;
+    team[*count].availability = 1;
+    team[*count].totalMissions = 1;
+    team[*count].completedMissions = 1;
+    (*count)++;
+}
+
+
+void addDefultIncident(){
+
+    missions[incCount].inc_id = 1;
+    strcpy(missions[incCount].type, "Rescue");
+    missions[incCount].severity = 2;
+    strcpy(missions[incCount].location, "Moratuwa");
+    missions[incCount].incX = 20;
+    missions[incCount].incY = 32;
+    missions[incCount].resolved = 0;
+    missions[incCount].teamID = -1;
+
+    incCount++;
+
+    missions[incCount].inc_id = 2;
+    strcpy(missions[incCount].type, "Search");
+    missions[incCount].severity = 2;
+    strcpy(missions[incCount].location, "Katubadda");
+    missions[incCount].incX = 70;
+    missions[incCount].incY = 37;
+    missions[incCount].resolved = 0;
+    missions[incCount].teamID = -1;
+
+    incCount++;
+
+    missions[incCount].inc_id = 3;
+    strcpy(missions[incCount].type, "Search");
+    missions[incCount].severity = 2;
+    strcpy(missions[incCount].location, "Colombo");
+    missions[incCount].incX = 10;
+    missions[incCount].incY = 90;
+    missions[incCount].resolved = 0;
+    missions[incCount].teamID = -1;
+
+    incCount++;
+
 }
