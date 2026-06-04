@@ -1635,6 +1635,7 @@ int special(){
 
           printf("Enter Victim IDs of victims with special care :");
           scanf("%d",&ee.spcvicID[n]);
+        if(ee.spcvicID[n]>=100){
           printf("Enter 1 for parental necessities:\n");
           printf("Enter 2 for medical necessities:\n");
           printf("Enter 3 for elderly necessities:\n");
@@ -1660,6 +1661,10 @@ int special(){
                default:
                   printf("Service can not be provided\n");
           }
+
+        }else{
+            printf("Invalid ID\n");
+        }
 
            printf("\nEnter 1 if there any other victims who need special care :");
            scanf("%d",&val);
